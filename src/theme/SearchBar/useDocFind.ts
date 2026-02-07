@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useGlobalData from '@docusaurus/useGlobalData';
 
@@ -35,10 +35,10 @@ export function useDocFind() {
 
     setLoading(true);
     try {
-      const mod = await import(
-        /* webpackIgnore: true */
-        `${baseUrl}docfind/docfind.js`
-      );
+      // Use script injection to load the WASM module, avoiding webpack's
+      // critical dependency warning on dynamic import expressions.
+      const url = baseUrl + 'docfind/docfind.js';
+      const mod = await loadScript(url);
       const search: SearchFn = mod.default ?? mod.search;
       searchFnRef.current = search;
       return search;
@@ -66,4 +66,31 @@ export function useDocFind() {
   );
 
   return { search, results, loading };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function loadScript(url: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.type = 'module';
+    // Create a unique callback name to receive the module exports.
+    const cbName = `__docfind_${Date.now()}`;
+    const wrapper = document.createElement('script');
+    wrapper.type = 'module';
+    wrapper.textContent = `import * as m from "${url}"; window.${cbName}(m);`;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any)[cbName] = (mod: unknown) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any)[cbName];
+      wrapper.remove();
+      resolve(mod);
+    };
+    wrapper.onerror = (err) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any)[cbName];
+      wrapper.remove();
+      reject(err);
+    };
+    document.head.appendChild(wrapper);
+  });
 }

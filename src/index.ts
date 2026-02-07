@@ -82,11 +82,17 @@ export default function themeSearchDocFind(
       console.log(`[docfind] Indexing ${documents.length} documents...`);
 
       const searchOutputDir = path.join(outDir, 'docfind');
-      await buildDocFindIndex(documents, searchOutputDir, {
-        cliBinary: config.cliBinary,
-      });
-
-      console.log(`[docfind] Search index written to ${searchOutputDir}`);
+      try {
+        await buildDocFindIndex(documents, searchOutputDir, {
+          cliBinary: config.cliBinary,
+        });
+        console.log(`[docfind] Search index written to ${searchOutputDir}`);
+      } catch (err) {
+        console.error(
+          `[docfind] Failed to build search index. Is the docfind CLI installed?\n`,
+          err,
+        );
+      }
     },
 
     configureWebpack() {

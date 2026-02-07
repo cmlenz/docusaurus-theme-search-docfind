@@ -10,7 +10,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.client.json",
+    "build": "tsc && tsc -p tsconfig.client.json && npm run copy-assets",
+    "copy-assets": "cp src/theme/SearchBar/styles.module.css lib/theme/SearchBar/",
     "watch": "tsc --watch"
   },
   "peerDependencies": {

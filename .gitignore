@@ -3,3 +3,6 @@ lib/
 dist/
 *.tgz
 .DS_Store
+test-site/build/
+test-site/node_modules/
+test-site/.docusaurus/
