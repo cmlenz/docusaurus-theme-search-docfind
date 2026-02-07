@@ -1,0 +1,34 @@
+{
+  "name": "docusaurus-theme-search-docfind",
+  "version": "0.1.0",
+  "description": "Docusaurus search theme powered by DocFind (WASM-based full-text search)",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.client.json",
+    "watch": "tsc --watch"
+  },
+  "peerDependencies": {
+    "@docusaurus/core": "^3.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "tslib": "^2.6.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.0.0",
+    "@docusaurus/types": "^3.0.0",
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0"
+  }
+}
